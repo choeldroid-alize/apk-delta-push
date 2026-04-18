@@ -1,0 +1,10 @@
+*.class
+*.jar
+target/
+bin/
+*.iml
+*.log
+*.ear
+.env
+*.swp
+*.war
