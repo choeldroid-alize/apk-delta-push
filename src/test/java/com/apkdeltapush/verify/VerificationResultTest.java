@@ -35,4 +35,18 @@ class VerificationResultTest {
         assertTrue(str.contains("timeout"));
         assertTrue(str.contains("false"));
     }
+
+    @Test
+    void failureWithNullMessageStoresNull() {
+        VerificationResult result = VerificationResult.failure(null);
+        assertFalse(result.isSuccess());
+        assertNull(result.getErrorMessage());
+    }
+
+    @Test
+    void successWithZeroVersionCode() {
+        VerificationResult result = VerificationResult.success(0);
+        assertTrue(result.isSuccess());
+        assertEquals(0, result.getInstalledVersionCode());
+    }
 }
