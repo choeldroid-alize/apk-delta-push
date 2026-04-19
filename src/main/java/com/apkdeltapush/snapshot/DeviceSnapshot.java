@@ -1,5 +1,7 @@
 package com.apkdeltapush.snapshot;
 
+import java.util.Objects;
+
 /**
  * Immutable record of an APK installation state on a specific device.
  */
@@ -25,6 +27,18 @@ public class DeviceSnapshot {
     public String getVersionCode() { return versionCode; }
     public String getChecksum() { return checksum; }
     public long getCapturedAtMs() { return capturedAtMs; }
+
+    /**
+     * Returns true if this snapshot represents the same device and package
+     * as the given snapshot, but with a different version or checksum.
+     */
+    public boolean isUpdateOf(DeviceSnapshot other) {
+        if (other == null) return false;
+        return Objects.equals(this.deviceSerial, other.deviceSerial)
+                && Objects.equals(this.packageName, other.packageName)
+                && (!Objects.equals(this.versionCode, other.versionCode)
+                    || !Objects.equals(this.checksum, other.checksum));
+    }
 
     @Override
     public String toString() {
