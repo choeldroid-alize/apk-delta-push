@@ -1,0 +1,14 @@
+package com.apkdeltapush.log;
+
+public enum PushEventType {
+    SESSION_START,
+    SESSION_END,
+    DIFF_GENERATED,
+    PATCH_APPLIED,
+    INSTALL_SUCCESS,
+    INSTALL_FAILURE,
+    ROLLBACK_TRIGGERED,
+    VERIFICATION_PASSED,
+    VERIFICATION_FAILED,
+    RETRY_ATTEMPT
+}
