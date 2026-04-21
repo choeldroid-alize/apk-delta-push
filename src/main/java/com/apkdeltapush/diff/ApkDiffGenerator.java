@@ -21,9 +21,13 @@ public class ApkDiffGenerator {
      * @param oldApk path to the currently installed APK (pulled from device)
      * @param newApk path to the new APK to be pushed
      * @return DiffResult with patch data
-     * @throws IOException if file reading fails
+     * @throws IOException              if file reading fails
+     * @throws IllegalArgumentException if either path does not point to a readable file
      */
     public DiffResult generate(Path oldApk, Path newApk) throws IOException {
+        validateApkPath(oldApk, "oldApk");
+        validateApkPath(newApk, "newApk");
+
         LOG.info("Generating diff: " + oldApk + " -> " + newApk);
 
         byte[] oldBytes = Files.readAllBytes(oldApk);
@@ -41,6 +45,29 @@ public class ApkDiffGenerator {
                 patch.length, ratio, savedBytes));
 
         return new DiffResult(patch, oldChecksum, newChecksum, oldBytes.length, newBytes.length);
+    }
+
+    /**
+     * Validates that the given path refers to an existing, readable regular file.
+     *
+     * @param path  the path to validate
+     * @param label a human-readable label used in error messages
+     * @throws IllegalArgumentException if the path is null, does not exist,
+     *                                  is not a regular file, or is not readable
+     */
+    private void validateApkPath(Path path, String label) {
+        if (path == null) {
+            throw new IllegalArgumentException(label + " must not be null");
+        }
+        if (!Files.exists(path)) {
+            throw new IllegalArgumentException(label + " does not exist: " + path);
+        }
+        if (!Files.isRegularFile(path)) {
+            throw new IllegalArgumentException(label + " is not a regular file: " + path);
+        }
+        if (!Files.isReadable(path)) {
+            throw new IllegalArgumentException(label + " is not readable: " + path);
+        }
     }
 
     /**
