@@ -28,10 +28,16 @@ public class PushHistoryRecord {
         this.packageName = Objects.requireNonNull(packageName, "packageName must not be null");
         this.fromVersion = fromVersion;
         this.toVersion = Objects.requireNonNull(toVersion, "toVersion must not be null");
+        if (deltaBytes < 0) {
+            throw new IllegalArgumentException("deltaBytes must not be negative: " + deltaBytes);
+        }
         this.deltaBytes = deltaBytes;
         this.success = success;
         this.failureReason = failureReason;
         this.timestamp = Objects.requireNonNull(timestamp, "timestamp must not be null");
+        if (durationMillis < 0) {
+            throw new IllegalArgumentException("durationMillis must not be negative: " + durationMillis);
+        }
         this.durationMillis = durationMillis;
     }
 
