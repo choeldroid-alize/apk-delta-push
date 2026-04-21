@@ -64,4 +64,28 @@ public class SplitApkHandler {
         all.addAll(set.getSplitApks());
         return Collections.unmodifiableList(all);
     }
+
+    /**
+     * Returns a list of split APKs from the set whose names contain the given
+     * configuration qualifier (e.g. "hdpi", "en", "x86"). The match is
+     * case-insensitive and performed against the file name without extension.
+     *
+     * @param set       the split APK set to filter
+     * @param qualifier the configuration qualifier to search for
+     * @return an unmodifiable list of matching split APK files
+     */
+    public List<File> findSplitsByQualifier(SplitApkSet set, String qualifier) {
+        if (qualifier == null || qualifier.isEmpty()) {
+            throw new IllegalArgumentException("qualifier must not be null or empty");
+        }
+        String lowerQualifier = qualifier.toLowerCase();
+        List<File> matched = new ArrayList<>();
+        for (File split : set.getSplitApks()) {
+            String nameWithoutExt = split.getName().replaceFirst("\\.apk$", "").toLowerCase();
+            if (nameWithoutExt.contains(lowerQualifier)) {
+                matched.add(split);
+            }
+        }
+        return Collections.unmodifiableList(matched);
+    }
 }
