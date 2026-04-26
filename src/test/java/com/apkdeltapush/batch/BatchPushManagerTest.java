@@ -83,4 +83,20 @@ class BatchPushManagerTest {
         manager.executeBatch(job -> BatchPushResult.ok(job, 10L));
         assertTrue(manager.summarize().isFullySuccessful());
     }
+
+    @Test
+    void executeBatch_clearsCompletedResultsOnRerun() {
+        // Verify that running executeBatch a second time does not accumulate
+        // stale results from a previous run.
+        manager.addJob(makeJob("j1"));
+        manager.executeBatch(job -> BatchPushResult.ok(job, 10L));
+
+        manager.clearJobs();
+        manager.addJob(makeJob("j2"));
+        manager.executeBatch(job -> BatchPushResult.failure(job, "device offline", 50L));
+
+        List<BatchPushResult> results = manager.getCompletedResults();
+        assertEquals(1, results.size(), "Second run should only contain results for the new batch");
+        assertFalse(results.get(0).isSuccess());
+    }
 }
