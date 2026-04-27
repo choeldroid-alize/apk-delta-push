@@ -51,4 +51,18 @@ public enum DeltaDiffStrategy {
             return XOR;
         }
     }
+
+    /**
+     * Resolves {@code AUTO} to a concrete strategy based on the given APK size,
+     * returning the strategy itself for all other values.
+     *
+     * @param apkSizeBytes size of the base APK in bytes
+     * @return a concrete (non-{@code AUTO}) strategy
+     */
+    public DeltaDiffStrategy resolve(long apkSizeBytes) {
+        if (this == AUTO) {
+            return recommended(apkSizeBytes);
+        }
+        return this;
+    }
 }
