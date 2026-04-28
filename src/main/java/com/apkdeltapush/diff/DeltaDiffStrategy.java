@@ -37,12 +37,23 @@ public enum DeltaDiffStrategy {
     }
 
     /**
+     * Returns true if this strategy is a concrete, resolvable strategy (i.e.
+     * not {@code AUTO}).
+     */
+    public boolean isConcrete() {
+        return this != AUTO;
+    }
+
+    /**
      * Returns the recommended strategy for a given APK size in bytes.
      *
      * @param apkSizeBytes size of the base APK
      * @return recommended strategy
      */
     public static DeltaDiffStrategy recommended(long apkSizeBytes) {
+        if (apkSizeBytes < 0) {
+            throw new IllegalArgumentException("apkSizeBytes must be non-negative, got: " + apkSizeBytes);
+        }
         if (apkSizeBytes < 5 * 1024 * 1024) {
             return BSDIFF;
         } else if (apkSizeBytes < 50 * 1024 * 1024) {
